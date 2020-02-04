@@ -1,0 +1,108 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+required_plugins = %w( vagrant-libvirt vagrant-proxyconf vagrant-hosts )
+plugins_to_install = required_plugins.select { |plugin| not Vagrant.has_plugin? plugin }
+if not plugins_to_install.empty?
+  puts "Installing plugins: #{plugins_to_install.join(' ')}"
+  if system "vagrant plugin install #{plugins_to_install.join(' ')}"
+    exec "vagrant #{ARGV.join(' ')}"
+  else
+    abort "Installation of one or more plugins has failed. Aborting."
+  end
+end
+
+# Resize the root volume group online.
+$resize_volume_group = <<RESIZE_VOLUME_GROUP_SCRIPT
+set -x
+df -h /
+fdisk /dev/sda <<FDISK_EOF
+d
+2
+n
+p
+2
+
+
+t
+2
+8e
+p
+w
+FDISK_EOF
+partprobe
+pvresize /dev/sda2
+lvextend -l +100%FREE /dev/centos_centos7/root
+fsadm resize  /dev/mapper/centos_centos7-root
+df -h /
+RESIZE_VOLUME_GROUP_SCRIPT
+
+$docker_compose_install_script = <<DOCKER_COMPOSE_INSTALL_SCRIPT
+curl -L https://github.com/docker/compose/releases/download/1.25.3/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+DOCKER_COMPOSE_INSTALL_SCRIPT
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure("2") do |config|
+  config.vm.define "nfs_storage" do |nfs_storage_config|
+    nfs_storage_config.vm.provider "libvirt" do |libvirt|
+      libvirt.cpus = 4
+      libvirt.memory = 2048
+      # Storage in gigabytes
+      libvirt.machine_virtual_size = 200
+    end
+    nfs_storage_config.vm.box = "generic/centos7"
+    nfs_storage_config.vm.hostname = "nfs-storage.local"
+    nfs_storage_config.vm.network "private_network", ip: "10.4.5.6", :netmask => "255.255.255.0"
+    nfs_storage_config.vm.synced_folder ".", "/vagrant", disabled: true
+
+    # Configure the proxy using the "vagrant-proxyconf" plugin.
+    nfs_storage_config.proxy.http     = "http://10.160.17.210:3128/"
+    nfs_storage_config.proxy.https    = "http://10.160.17.210:3128/"
+    nfs_storage_config.proxy.no_proxy = "localhost,127.0.0.1"
+
+    nfs_storage_config.vm.provision :shell, inline: $resize_volume_group
+    nfs_storage_config.vm.provision :shell, path: "scripts/setup_nfs_server.sh"
+  end
+
+  # The most common configuration options are documented and commented below.
+  # For a complete reference, please see the online documentation at
+  # https://docs.vagrantup.com.
+  config.vm.define "docker_server" do |docker_server_config|
+    docker_server_config.vm.provider "libvirt" do |libvirt|
+      libvirt.cpus = 4
+      libvirt.memory = 8192
+      # Storage in gigabytes
+      libvirt.machine_virtual_size = 100
+    end
+
+    # Every Vagrant development environment requires a box. You can search for
+    # boxes at https://vagrantcloud.com/search.
+    docker_server_config.vm.box = "generic/centos7"
+    docker_server_config.vm.hostname = "docker-server.local"
+    docker_server_config.vm.network "private_network", ip: "10.4.5.7", :netmask => "255.255.255.0"
+    docker_server_config.vm.provision :hosts, :sync_hosts => true
+    docker_server_config.vm.synced_folder ".", "/vagrant", disabled: true
+    docker_server_config.vm.synced_folder "conf/restic", "/vagrant/.restic", type: "rsync"
+
+    # Configure the proxy using the "vagrant-proxyconf" plugin.
+    docker_server_config.proxy.http     = "http://10.160.17.210:3128/"
+    docker_server_config.proxy.https    = "http://10.160.17.210:3128/"
+    docker_server_config.proxy.no_proxy = "localhost,127.0.0.1"
+    docker_server_config.vm.provision :shell, inline: $resize_volume_group
+    docker_server_config.vm.provision :shell, path: "scripts/setup_nfs_client.sh"
+    docker_server_config.vm.provision :shell, path: "scripts/setup_restic.sh"
+
+    # Provision docker.
+    docker_server_config.vm.provision :docker
+
+    # Provision docker-compose.
+    docker_server_config.vm.provision :shell, inline: $docker_compose_install_script
+
+    # TODO: clone a git repo and run a script from there
+
+  end
+end
