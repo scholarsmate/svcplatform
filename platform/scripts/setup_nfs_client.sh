@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 echo '##########################################################################'
-echo '#               About to run nfs_client_setup.sh script                  #'
+echo '#               About to run setup_nfs_client.sh script                  #'
 echo '##########################################################################'
 
 set -ex
