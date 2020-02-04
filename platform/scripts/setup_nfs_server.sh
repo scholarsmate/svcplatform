@@ -40,7 +40,7 @@ systemctl restart firewalld
 
 # create a shared directory for the vagrant user
 mkdir -p /nfs/export_rw/vagrant
-chmod vagrant:vagrant /nfs/export_rw/vagrant
+chown vagrant:vagrant /nfs/export_rw/vagrant
 
 # confirm the exports
 showmount -e localhost
