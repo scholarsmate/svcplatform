@@ -9,7 +9,8 @@ set -ex
 # install git
 yum install -y git
 
-mkdir ~/git
+rm -rf ~/git
+mkdir -p ~/git
 cd ~/git
 git clone https://github.com/scholarsmate/traefik2-docker-stack.git
 cd traefik2-docker-stack

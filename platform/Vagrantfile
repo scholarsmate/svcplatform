@@ -84,6 +84,8 @@ Vagrant.configure("2") do |config|
     docker_server_config.vm.box = "generic/centos7"
     docker_server_config.vm.hostname = "docker-server.local"
     docker_server_config.vm.network "private_network", ip: "10.4.5.7", :netmask => "255.255.255.0"
+    docker_server_config.vm.network "forwarded_port", guest: 80, host: 8080
+    docker_server_config.vm.network "forwarded_port", guest: 443, host: 8443
     docker_server_config.vm.provision :hosts, :sync_hosts => true
     docker_server_config.vm.synced_folder ".", "/vagrant", disabled: true
     docker_server_config.vm.synced_folder "conf/restic", "/vagrant/.restic", type: "rsync"
