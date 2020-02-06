@@ -53,6 +53,8 @@ Vagrant.configure("2") do |config|
       libvirt.memory = 2048
       # Storage in gigabytes
       libvirt.machine_virtual_size = 200
+      libvirt.graphics_type = "none"
+      libvirt.random_hostname = true
     end
     nfs_storage_config.vm.box = "generic/centos7"
     nfs_storage_config.vm.hostname = "nfs-storage.local"
@@ -77,6 +79,8 @@ Vagrant.configure("2") do |config|
       libvirt.memory = 8192
       # Storage in gigabytes
       libvirt.machine_virtual_size = 100
+      libvirt.graphics_type = "none"
+      libvirt.random_hostname = true
     end
 
     # Every Vagrant development environment requires a box. You can search for
