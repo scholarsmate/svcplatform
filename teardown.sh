@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
+SVC_PLATFORM=${SVC_PLATFORM:-platform}
+
 set -ex
 
-cd platform
+cd "$SVC_PLATFORM"
 vagrant destroy --force

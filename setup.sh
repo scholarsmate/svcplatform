@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-VAGRANT_VER="2.2.7"
+VAGRANT_VER=${VAGRANT_VER:-2.2.7}
+SVC_PLATFORM=${SVC_PLATFORM:-platform}
 
 echo "Installing required packages for libvirt and vagrant ${VAGRANT_VER}..."
 
@@ -14,9 +15,9 @@ if [[ ! $( which vagrant ) ]]; then
   sudo yum install -y https://releases.hashicorp.com/vagrant/${VAGRANT_VER}/vagrant_${VAGRANT_VER}_x86_64.rpm
 fi
 
-echo "Setting up the platform..."
+echo "Setting up the platform in ${SVC_PLATFORM}..."
 
-cd platform
+cd "$SVC_PLATFORM"
 vagrant up --no-parallel
 vagrant status
 
