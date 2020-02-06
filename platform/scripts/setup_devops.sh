@@ -7,7 +7,7 @@ echo '##########################################################################
 set -ex
 
 # install git
-yum install -y git
+sudo yum install -y git
 
 rm -rf ~/git
 mkdir -p ~/git
