@@ -18,6 +18,16 @@ fi
 echo "Setting up the platform in ${SVC_PLATFORM}..."
 
 cd "$SVC_PLATFORM"
-vagrant up --no-parallel
+vagrant up --provider=libvirt --no-parallel
 vagrant status
 
+echo "Halting machines to take pristine snapshots..."
+vagrant halt
+for vm_name in "${USER}-${SVC_PLATFORM}-nfs_server" "${USER}-${SVC_PLATFORM}-docker_server"; do
+  virsh snapshot-create-as --domain "$vm_name" --name "pristine" --description "pristine snapshot";
+  virsh snapshot-list "$vm_name"
+done
+
+echo "Bringing machines back online..."
+vagrant up --provider=libvirt --no-parallel
+vagrant status
