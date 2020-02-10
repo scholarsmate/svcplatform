@@ -42,7 +42,6 @@ curl -L https://github.com/docker/compose/releases/download/1.25.3/docker-compos
 chmod +x /usr/local/bin/docker-compose
 DOCKER_COMPOSE_INSTALL_SCRIPT
 
-default_prefix = "#{domain_prefix}"
 cwd = Dir.pwd.split("/").last
 username = ENV['USER']
 domain_prefix = "#{username}-#{cwd}"
@@ -59,7 +58,7 @@ Vagrant.configure("2") do |config|
       # Storage in gigabytes
       libvirt.machine_virtual_size = 200
       libvirt.graphics_type = "none"
-      libvirt.default_prefix = "#{domain_prefix}-nfs_storage"
+      libvirt.default_prefix = "#{domain_prefix}"
     end
     nfs_storage_config.vm.box = "generic/centos7"
     nfs_storage_config.vm.hostname = "nfs-storage.local"
@@ -85,7 +84,7 @@ Vagrant.configure("2") do |config|
       # Storage in gigabytes
       libvirt.machine_virtual_size = 100
       libvirt.graphics_type = "none"
-      libvirt.default_prefix = "#{domain_prefix}-docker_server"
+      libvirt.default_prefix = "#{domain_prefix}"
     end
 
     # Every Vagrant development environment requires a box. You can search for
