@@ -9,6 +9,7 @@ echo "Installing required packages for libvirt and vagrant ${VAGRANT_VER}..."
 set -ex
 
 # This is idempotent
+sudo yum makecache
 sudo yum install -y libvirt libvirt-devel ruby-devel gcc qemu-kvm
 
 # If vagrant is installed, don't do anything, but if not, install the desired version
