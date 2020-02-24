@@ -59,21 +59,20 @@ Vagrant.configure("2") do |config|
       libvirt.machine_virtual_size = 200
       libvirt.graphics_type = "none"
       libvirt.default_prefix = "#{domain_prefix}"
-    end
+    end # nfs_storage_config.vm.provider
     nfs_storage_config.vm.box = "generic/centos7"
     nfs_storage_config.vm.hostname = "nfs-storage.local"
-    nfs_storage_config.vm.network "private_network", ip: "10.4.5.6", :netmask => "255.255.255.0"
+    nfs_storage_config.vm.network "private_network", ip: "10.4.16.6", :netmask => "255.255.255.0"
     nfs_storage_config.vm.synced_folder ".", "/vagrant", disabled: true
 
     # Configure the proxy using the "vagrant-proxyconf" plugin.
     nfs_storage_config.proxy.http     = "http://10.160.17.210:3128/"
     nfs_storage_config.proxy.https    = "http://10.160.17.210:3128/"
-    nfs_storage_config.proxy.no_proxy = "localhost,127.0.0.1"
+    nfs_storage_config.proxy.no_proxy = "localhost,127.0.0.1,'*.domain.com'"
 
     nfs_storage_config.vm.provision :shell, inline: $resize_volume_group
-    nfs_storage_config.vm.provision :shell, path: "scripts/update_os.sh"
     nfs_storage_config.vm.provision :shell, path: "scripts/setup_nfs_server.sh"
-  end
+  end #config.vm.define "nfs_storage"
 
   # The most common configuration options are documented and commented below.
   # For a complete reference, please see the online documentation at
@@ -86,28 +85,24 @@ Vagrant.configure("2") do |config|
       libvirt.machine_virtual_size = 100
       libvirt.graphics_type = "none"
       libvirt.default_prefix = "#{domain_prefix}"
-    end
+    end #docker_server_config.vm.provider "libvirt" do
 
     # Every Vagrant development environment requires a box. You can search for
     # boxes at https://vagrantcloud.com/search.
     docker_server_config.vm.box = "generic/centos7"
     docker_server_config.vm.hostname = "docker-server.local"
-    docker_server_config.vm.network "private_network", ip: "10.4.5.7", :netmask => "255.255.255.0"
+    docker_server_config.vm.network "private_network", ip: "10.4.16.11", :netmask => "255.255.255.0"
     docker_server_config.vm.network "forwarded_port", guest: 80, host: 8080
     docker_server_config.vm.network "forwarded_port", guest: 443, host: 8443
     docker_server_config.vm.provision :hosts, :sync_hosts => true
-
-    # Sync folders to the VM.
     docker_server_config.vm.synced_folder ".", "/vagrant", disabled: true
     docker_server_config.vm.synced_folder "conf/restic", "/vagrant/.restic", type: "rsync"
-    docker_server_config.vm.synced_folder "repo/svcrepo", "/vagrant/svcrepo", type: "rsync"
 
     # Configure the proxy using the "vagrant-proxyconf" plugin.
     docker_server_config.proxy.http     = "http://10.160.17.210:3128/"
     docker_server_config.proxy.https    = "http://10.160.17.210:3128/"
-    docker_server_config.proxy.no_proxy = "localhost,127.0.0.1"
+    docker_server_config.proxy.no_proxy = "localhost,127.0.0.1,.domain.com"
     docker_server_config.vm.provision :shell, inline: $resize_volume_group
-    docker_server_config.vm.provision :shell, path: "scripts/update_os.sh"
     docker_server_config.vm.provision :shell, path: "scripts/setup_nfs_client.sh"
     docker_server_config.vm.provision :shell, path: "scripts/setup_restic.sh"
 
@@ -117,8 +112,103 @@ Vagrant.configure("2") do |config|
     # Provision docker-compose.
     docker_server_config.vm.provision :shell, inline: $docker_compose_install_script
 
-    # Setup devops stack
-    docker_server_config.vm.provision :shell, path: "scripts/setup_svc.sh", privileged: false
+    # Setup the swarm.
+    docker_server_config.vm.provision :shell, path: "scripts/start_swarm.sh", privileged: false
+  end #config.vm.define "docker_server"
+ 
 
-  end
+  # The most common configuration options are documented and commented below.
+  # For a complete reference, please see the online documentation at
+  # https://docs.vagrantup.com.
+  config.vm.define "docker_worker_1" do |docker_worker_1_config|
+    docker_worker_1_config.vm.provider "libvirt" do |libvirt|
+      libvirt.cpus = 4
+      libvirt.memory = 8192
+      # Storage in gigabytes
+      libvirt.machine_virtual_size = 100
+      libvirt.graphics_type = "none"
+      libvirt.default_prefix = "#{domain_prefix}"
+    end #docker_worker_1_config.vm.provider "libvirt" do 
+
+    # Every Vagrant development environment requires a box. You can search for
+    # boxes at https://vagrantcloud.com/search.
+    docker_worker_1_config.vm.box = "generic/centos7"
+    docker_worker_1_config.vm.hostname = "docker-worker_1.local"
+    docker_worker_1_config.vm.network "private_network", ip: "10.4.16.12", :netmask => "255.255.255.0"
+    docker_worker_1_config.vm.network "forwarded_port", guest: 80, host: 8080
+    docker_worker_1_config.vm.network "forwarded_port", guest: 443, host: 8443
+    docker_worker_1_config.vm.provision :hosts, :sync_hosts => true
+    docker_worker_1_config.vm.synced_folder ".", "/vagrant", disabled: true
+    docker_worker_1_config.vm.synced_folder "conf/restic", "/vagrant/.restic", type: "rsync"
+    docker_worker_1_config.vm.synced_folder "repo/svcrepo", "/vagrant/svcrepo", type: "rsync"
+
+    # Configure the proxy using the "vagrant-proxyconf" plugin.
+    docker_worker_1_config.proxy.http     = "http://10.160.17.210:3128/"
+    docker_worker_1_config.proxy.https    = "http://10.160.17.210:3128/"
+    docker_worker_1_config.proxy.no_proxy = "localhost,127.0.0.1,.domain.com"
+
+    docker_worker_1_config.vm.provision :shell, inline: $resize_volume_group
+    docker_worker_1_config.vm.provision :shell, path: "scripts/setup_nfs_client.sh"
+    docker_worker_1_config.vm.provision :shell, path: "scripts/setup_restic.sh"
+
+    # Provision docker.
+    docker_worker_1_config.vm.provision :docker
+
+    # Provision docker-compose.
+    docker_worker_1_config.vm.provision :shell, inline: $docker_compose_install_script
+
+    # Join the swarm.
+    docker_worker_1_config.vm.provision :shell, path: "scripts/join_swarm.sh", privileged: false
+
+  end #config.vm.define "docker_worker_1" do
+
+
+  # The most common configuration options are documented and commented below.
+  # For a complete reference, please see the online documentation at
+  # https://docs.vagrantup.com.
+  config.vm.define "docker_worker_2" do |docker_worker_2_config|
+    docker_worker_2_config.vm.provider "libvirt" do |libvirt|
+      libvirt.cpus = 4
+      libvirt.memory = 8192
+      # Storage in gigabytes
+      libvirt.machine_virtual_size = 100
+      libvirt.graphics_type = "none"
+      libvirt.default_prefix = "#{domain_prefix}"
+    end #docker_worker_2_config.vm.provider "libvirt"
+    
+ # Every Vagrant development environment requires a box. You can search for
+    # boxes at https://vagrantcloud.com/search.
+    docker_worker_2_config.vm.box = "generic/centos7"
+    docker_worker_2_config.vm.hostname = "docker-worker_2.local"
+    docker_worker_2_config.vm.network "private_network", ip: "10.4.16.13", :netmask => "255.255.255.0"
+    docker_worker_2_config.vm.network "forwarded_port", guest: 80, host: 8080
+    docker_worker_2_config.vm.network "forwarded_port", guest: 443, host: 8443
+    docker_worker_2_config.vm.provision :hosts, :sync_hosts => true
+    docker_worker_2_config.vm.synced_folder ".", "/vagrant", disabled: true
+    docker_worker_2_config.vm.synced_folder "conf/restic", "/vagrant/.restic", type: "rsync"
+    docker_worker_2_config.vm.synced_folder "repo/svcrepo", "/vagrant/svcrepo", type: "rsync"
+
+    # Configure the proxy using the "vagrant-proxyconf" plugin.
+    docker_worker_2_config.proxy.http     = "http://10.160.17.210:3128/"
+    docker_worker_2_config.proxy.https    = "http://10.160.17.210:3128/"
+    docker_worker_2_config.proxy.no_proxy = "localhost,127.0.0.1,.domain.com"
+
+    docker_worker_2_config.vm.provision :shell, inline: $resize_volume_group
+    docker_worker_2_config.vm.provision :shell, path: "scripts/setup_nfs_client.sh"
+    docker_worker_2_config.vm.provision :shell, path: "scripts/setup_restic.sh"
+
+    # Provision docker.
+    docker_worker_2_config.vm.provision :docker
+
+    # Provision docker-compose.
+    docker_worker_2_config.vm.provision :shell, inline: $docker_compose_install_script
+
+    # Join the swarm.
+    docker_worker_2_config.vm.provision :shell, path: "scripts/join_swarm.sh", privileged: false
+
+    # Setup the service stack.
+    docker_worker_2_config.vm.provision :shell, path: "scripts/setup_svc.sh", privileged: false
+
+  end #config.vm.define "docker_worker_2" do
+
 end
