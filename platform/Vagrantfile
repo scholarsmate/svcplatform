@@ -66,9 +66,9 @@ Vagrant.configure("2") do |config|
     nfs_storage_config.vm.synced_folder ".", "/vagrant", disabled: true
 
     # Configure the proxy using the "vagrant-proxyconf" plugin.
-    nfs_storage_config.proxy.http     = "http://10.160.17.210:3128/"
-    nfs_storage_config.proxy.https    = "http://10.160.17.210:3128/"
-    nfs_storage_config.proxy.no_proxy = "localhost,127.0.0.1,'*.domain.com'"
+    #nfs_storage_config.proxy.http     = "http://10.160.17.210:3128/"
+    #nfs_storage_config.proxy.https    = "http://10.160.17.210:3128/"
+    #nfs_storage_config.proxy.no_proxy = "localhost,127.0.0.1,'*.domain.com'"
 
     nfs_storage_config.vm.provision :shell, inline: $resize_volume_group
     nfs_storage_config.vm.provision :shell, path: "scripts/setup_nfs_server.sh"
@@ -99,9 +99,10 @@ Vagrant.configure("2") do |config|
     docker_server_config.vm.synced_folder "conf/restic", "/vagrant/.restic", type: "rsync"
 
     # Configure the proxy using the "vagrant-proxyconf" plugin.
-    docker_server_config.proxy.http     = "http://10.160.17.210:3128/"
-    docker_server_config.proxy.https    = "http://10.160.17.210:3128/"
-    docker_server_config.proxy.no_proxy = "localhost,127.0.0.1,.domain.com"
+    #docker_server_config.proxy.http     = "http://10.160.17.210:3128/"
+    #docker_server_config.proxy.https    = "http://10.160.17.210:3128/"
+    #docker_server_config.proxy.no_proxy = "localhost,127.0.0.1,.domain.com"
+
     docker_server_config.vm.provision :shell, inline: $resize_volume_group
     docker_server_config.vm.provision :shell, path: "scripts/setup_nfs_client.sh"
     docker_server_config.vm.provision :shell, path: "scripts/setup_restic.sh"
@@ -143,9 +144,9 @@ Vagrant.configure("2") do |config|
     docker_worker_1_config.vm.synced_folder "repo/svcrepo", "/vagrant/svcrepo", type: "rsync"
 
     # Configure the proxy using the "vagrant-proxyconf" plugin.
-    docker_worker_1_config.proxy.http     = "http://10.160.17.210:3128/"
-    docker_worker_1_config.proxy.https    = "http://10.160.17.210:3128/"
-    docker_worker_1_config.proxy.no_proxy = "localhost,127.0.0.1,.domain.com"
+    #docker_worker_1_config.proxy.http     = "http://10.160.17.210:3128/"
+    #docker_worker_1_config.proxy.https    = "http://10.160.17.210:3128/"
+    #docker_worker_1_config.proxy.no_proxy = "localhost,127.0.0.1,.domain.com"
 
     docker_worker_1_config.vm.provision :shell, inline: $resize_volume_group
     docker_worker_1_config.vm.provision :shell, path: "scripts/setup_nfs_client.sh"
@@ -189,9 +190,9 @@ Vagrant.configure("2") do |config|
     docker_worker_2_config.vm.synced_folder "repo/svcrepo", "/vagrant/svcrepo", type: "rsync"
 
     # Configure the proxy using the "vagrant-proxyconf" plugin.
-    docker_worker_2_config.proxy.http     = "http://10.160.17.210:3128/"
-    docker_worker_2_config.proxy.https    = "http://10.160.17.210:3128/"
-    docker_worker_2_config.proxy.no_proxy = "localhost,127.0.0.1,.domain.com"
+    #docker_worker_2_config.proxy.http     = "http://10.160.17.210:3128/"
+    #docker_worker_2_config.proxy.https    = "http://10.160.17.210:3128/"
+    #docker_worker_2_config.proxy.no_proxy = "localhost,127.0.0.1,.domain.com"
 
     docker_worker_2_config.vm.provision :shell, inline: $resize_volume_group
     docker_worker_2_config.vm.provision :shell, path: "scripts/setup_nfs_client.sh"
