@@ -10,7 +10,18 @@ set -ex
 
 # This is idempotent
 sudo yum makecache
-sudo yum install -y libvirt libvirt-devel ruby-devel gcc qemu-kvm
+sudo yum install -y libvirt libvirt-devel ruby-devel gcc qemu-kvm haproxy
+
+# Setup haproxy
+sudo cp config/haproxy/haproxy.cfg /etc/haproxy/
+sudo systemctl start haproxy
+sudo systemctl enable haproxy
+
+# Setup the firewall
+sudo systemctl start firewalld
+sudo systemctl enable firewalld
+sudo firewall-cmd --permanent --zone=public --add-service=http
+sudo firewall-cmd --reload
 
 # If vagrant is installed, don't do anything, but if not, install the desired version
 if [[ ! $( which vagrant ) ]]; then
@@ -27,7 +38,7 @@ vagrant status
 
 echo "Halting machines to take pristine snapshots..."
 vagrant halt
-for vm_name in "${USER}-${SVC_PLATFORM}_nfs_storage" "${USER}-${SVC_PLATFORM}_docker_server" "${USER}-${SVC_PLATFORM}_docker_worker_1" "${USER}-${SVC_PLATFORM}_docker_worker_2"; do
+for vm_name in "${USER}-${SVC_PLATFORM}_nfs_storage" "${USER}-${SVC_PLATFORM}_docker_server_1" "${USER}-${SVC_PLATFORM}_docker_server_2" "${USER}-${SVC_PLATFORM}_docker_server_3"; do
   sudo virsh snapshot-create-as --domain "$vm_name" --name "pristine" --description "pristine snapshot";
   sudo virsh snapshot-list "$vm_name"
 done

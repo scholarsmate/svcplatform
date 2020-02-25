@@ -71,6 +71,7 @@ Vagrant.configure("2") do |config|
     #nfs_storage_config.proxy.no_proxy = "localhost,127.0.0.1,'*.domain.com'"
 
     nfs_storage_config.vm.provision :shell, inline: $resize_volume_group
+    nfs_storage_config.vm.provision :shell, path: "scripts/update_os.sh"
     nfs_storage_config.vm.provision :shell, path: "scripts/setup_nfs_server.sh"
   end #config.vm.define "nfs_storage"
 
@@ -103,6 +104,7 @@ Vagrant.configure("2") do |config|
     #docker_server_1_config.proxy.no_proxy = "localhost,127.0.0.1,.domain.com"
 
     docker_server_1_config.vm.provision :shell, inline: $resize_volume_group
+    docker_server_1_config.vm.provision :shell, path: "scripts/update_os.sh"
     docker_server_1_config.vm.provision :shell, path: "scripts/setup_nfs_client.sh"
     docker_server_1_config.vm.provision :shell, path: "scripts/setup_restic.sh"
 
@@ -147,6 +149,7 @@ Vagrant.configure("2") do |config|
     #docker_server_2_config.proxy.no_proxy = "localhost,127.0.0.1,.domain.com"
 
     docker_server_2_config.vm.provision :shell, inline: $resize_volume_group
+    docker_server_2_config.vm.provision :shell, path: "scripts/update_os.sh"
     docker_server_2_config.vm.provision :shell, path: "scripts/setup_nfs_client.sh"
     docker_server_2_config.vm.provision :shell, path: "scripts/setup_restic.sh"
 
@@ -192,6 +195,7 @@ Vagrant.configure("2") do |config|
     #docker_server_3_config.proxy.no_proxy = "localhost,127.0.0.1,.domain.com"
 
     docker_server_3_config.vm.provision :shell, inline: $resize_volume_group
+    docker_server_3_config.vm.provision :shell, path: "scripts/update_os.sh"
     docker_server_3_config.vm.provision :shell, path: "scripts/setup_nfs_client.sh"
     docker_server_3_config.vm.provision :shell, path: "scripts/setup_restic.sh"
 
