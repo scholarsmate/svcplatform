@@ -15,7 +15,7 @@ systemctl enable cachefilesd
 
 mkdir -p /mnt/data /mnt/data_ro
 
-echo '10.4.5.6:/nfs/export_ro   /mnt/data_ro   nfs   soft,timeo=100,_netdev,fsc,ro   0   0' >> /etc/fstab
-echo '10.4.5.6:/nfs/export_rw   /mnt/data      nfs   soft,timeo=100,_netdev,fsc,rw   0   0' >> /etc/fstab
+echo '10.4.16.6:/nfs/export_ro   /mnt/data_ro   nfs   soft,timeo=100,_netdev,fsc,ro   0   0' >> /etc/fstab
+echo '10.4.16.6:/nfs/export_rw   /mnt/data      nfs   soft,timeo=100,_netdev,fsc,rw   0   0' >> /etc/fstab
 
 mount -a

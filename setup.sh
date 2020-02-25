@@ -27,7 +27,7 @@ vagrant status
 
 echo "Halting machines to take pristine snapshots..."
 vagrant halt
-for vm_name in "${USER}-${SVC_PLATFORM}_nfs_storage" "${USER}-${SVC_PLATFORM}_docker_server"; do
+for vm_name in "${USER}-${SVC_PLATFORM}_nfs_storage" "${USER}-${SVC_PLATFORM}_docker_server" "${USER}-${SVC_PLATFORM}_docker_worker_1" "${USER}-${SVC_PLATFORM}_docker_worker_2"; do
   sudo virsh snapshot-create-as --domain "$vm_name" --name "pristine" --description "pristine snapshot";
   sudo virsh snapshot-list "$vm_name"
 done
