@@ -93,7 +93,6 @@ Vagrant.configure("2") do |config|
     docker_server_1_config.vm.hostname = "docker-server.local"
     docker_server_1_config.vm.network "private_network", ip: "10.4.16.11", :netmask => "255.255.255.0"
     docker_server_1_config.vm.network "forwarded_port", guest: 80, host: 8881
-    docker_server_1_config.vm.network "forwarded_port", guest: 8080, host: 8081
     docker_server_1_config.vm.provision :hosts, :sync_hosts => true
     docker_server_1_config.vm.synced_folder ".", "/vagrant", disabled: true
     docker_server_1_config.vm.synced_folder "conf/restic", "/vagrant/.restic", type: "rsync"
@@ -137,7 +136,6 @@ Vagrant.configure("2") do |config|
     docker_server_2_config.vm.hostname = "docker-server-1.local"
     docker_server_2_config.vm.network "private_network", ip: "10.4.16.12", :netmask => "255.255.255.0"
     docker_server_2_config.vm.network "forwarded_port", guest: 80, host: 8882
-    docker_server_2_config.vm.network "forwarded_port", guest: 8080, host: 8082
     docker_server_2_config.vm.provision :hosts, :sync_hosts => true
     docker_server_2_config.vm.synced_folder ".", "/vagrant", disabled: true
     docker_server_2_config.vm.synced_folder "conf/restic", "/vagrant/.restic", type: "rsync"
@@ -183,7 +181,6 @@ Vagrant.configure("2") do |config|
     docker_server_3_config.vm.hostname = "docker-server-2.local"
     docker_server_3_config.vm.network "private_network", ip: "10.4.16.13", :netmask => "255.255.255.0"
     docker_server_3_config.vm.network "forwarded_port", guest: 80, host: 8883
-    docker_server_3_config.vm.network "forwarded_port", guest: 8080, host: 8083
     docker_server_3_config.vm.provision :hosts, :sync_hosts => true
     docker_server_3_config.vm.synced_folder ".", "/vagrant", disabled: true
     docker_server_3_config.vm.synced_folder "conf/restic", "/vagrant/.restic", type: "rsync"
