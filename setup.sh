@@ -14,6 +14,7 @@ sudo yum install -y libvirt libvirt-devel ruby-devel gcc qemu-kvm haproxy
 
 # Setup haproxy
 sudo cp conf/haproxy/haproxy.cfg /etc/haproxy/
+sudo setsebool -P haproxy_connect_any=1
 sudo systemctl start haproxy
 sudo systemctl enable haproxy
 
