@@ -17,9 +17,6 @@ sudo systemctl restart firewalld
 # Start the storm cluster
 docker swarm init --advertise-addr 10.4.16.11:2377
 
-# Setup the registry
-docker service create --name registry --publish published=5000,target=5000 registry:2
-
 # Save the worker and manager tokens to file on shared storage
 docker swarm join-token manager -q >/mnt/data/vagrant/swarm_token.txt
 docker swarm join-token worker -q >/mnt/data/vagrant/swarm_worker_token.txt
