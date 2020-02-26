@@ -97,6 +97,7 @@ Vagrant.configure("2") do |config|
     docker_server_1_config.vm.provision :hosts, :sync_hosts => true
     docker_server_1_config.vm.synced_folder ".", "/vagrant", disabled: true
     docker_server_1_config.vm.synced_folder "conf/restic", "/vagrant/.restic", type: "rsync"
+    docker_server_1_config.vm.synced_folder "repo/svcrepo", "/vagrant/svcrepo", type: "rsync"
 
     # Configure the proxy using the "vagrant-proxyconf" plugin.
     #docker_server_1_config.proxy.http     = "http://10.160.17.210:3128/"
