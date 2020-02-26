@@ -44,6 +44,7 @@ DOCKER_COMPOSE_INSTALL_SCRIPT
 
 cwd = Dir.pwd.split("/").last
 username = ENV['USER']
+svc_domain = ENV['SVC_DOMAIN']
 domain_prefix = "#{username}-#{cwd}"
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
@@ -68,7 +69,7 @@ Vagrant.configure("2") do |config|
     # Configure the proxy using the "vagrant-proxyconf" plugin.
     #nfs_storage_config.proxy.http     = "http://10.160.17.210:3128/"
     #nfs_storage_config.proxy.https    = "http://10.160.17.210:3128/"
-    #nfs_storage_config.proxy.no_proxy = "localhost,127.0.0.1,'*.domain.com'"
+    #nfs_storage_config.proxy.no_proxy = "localhost,127.0.0.1,'*.#{svc_domain}'"
 
     nfs_storage_config.vm.provision :shell, inline: $resize_volume_group
     nfs_storage_config.vm.provision :shell, path: "scripts/update_os.sh"
@@ -102,7 +103,7 @@ Vagrant.configure("2") do |config|
     # Configure the proxy using the "vagrant-proxyconf" plugin.
     #docker_server_1_config.proxy.http     = "http://10.160.17.210:3128/"
     #docker_server_1_config.proxy.https    = "http://10.160.17.210:3128/"
-    #docker_server_1_config.proxy.no_proxy = "localhost,127.0.0.1,.domain.com"
+    #docker_server_1_config.proxy.no_proxy = "localhost,127.0.0.1,.#{svc_domain}"
 
     docker_server_1_config.vm.provision :shell, inline: $resize_volume_group
     docker_server_1_config.vm.provision :shell, path: "scripts/update_os.sh"
@@ -147,7 +148,7 @@ Vagrant.configure("2") do |config|
     # Configure the proxy using the "vagrant-proxyconf" plugin.
     #docker_server_2_config.proxy.http     = "http://10.160.17.210:3128/"
     #docker_server_2_config.proxy.https    = "http://10.160.17.210:3128/"
-    #docker_server_2_config.proxy.no_proxy = "localhost,127.0.0.1,.domain.com"
+    #docker_server_2_config.proxy.no_proxy = "localhost,127.0.0.1,.#{svc_domain}"
 
     docker_server_2_config.vm.provision :shell, inline: $resize_volume_group
     docker_server_2_config.vm.provision :shell, path: "scripts/update_os.sh"
@@ -193,7 +194,7 @@ Vagrant.configure("2") do |config|
     # Configure the proxy using the "vagrant-proxyconf" plugin.
     #docker_server_3_config.proxy.http     = "http://10.160.17.210:3128/"
     #docker_server_3_config.proxy.https    = "http://10.160.17.210:3128/"
-    #docker_server_3_config.proxy.no_proxy = "localhost,127.0.0.1,.domain.com"
+    #docker_server_3_config.proxy.no_proxy = "localhost,127.0.0.1,.#{svc_domain}"
 
     docker_server_3_config.vm.provision :shell, inline: $resize_volume_group
     docker_server_3_config.vm.provision :shell, path: "scripts/update_os.sh"
@@ -210,7 +211,7 @@ Vagrant.configure("2") do |config|
     docker_server_3_config.vm.provision :shell, path: "scripts/join_swarm.sh", privileged: false
 
     # Setup the service stack.
-    docker_server_3_config.vm.provision :shell, path: "scripts/setup_svc.sh", privileged: false
+    docker_server_3_config.vm.provision :shell, path: "scripts/setup_svc.sh", env: {"SVC_DOMAIN" => "#{svc_domain}"}, privileged: false
 
   end #config.vm.define "docker_server_3" do
 

@@ -3,6 +3,7 @@
 VAGRANT_VER=${VAGRANT_VER:-2.2.7}
 SVC_PLATFORM=${SVC_PLATFORM:-platform}
 SVC_REPO=${SVC_REPO:-https://github.com/scholarsmate/traefik2-docker-stack.git}
+SVC_DOMAIN=${SVC_DOMAIN:-domain.com}
 
 echo "Installing required packages for libvirt and vagrant ${VAGRANT_VER}..."
 

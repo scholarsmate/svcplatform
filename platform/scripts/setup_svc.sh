@@ -6,4 +6,4 @@ echo '##########################################################################
 
 set -ex
 
-[[ -f /vagrant/svcrepo/setup.sh ]] && cd /vagrant/svcrepo && /bin/sh ./setup.sh
+[[ -f /vagrant/svcrepo/setup.sh ]] && cd /vagrant/svcrepo && SVC_DOMAIN=${SVC_DOMAIN:-domain.com} /bin/sh ./setup.sh
