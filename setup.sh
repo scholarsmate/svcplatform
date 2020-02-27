@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# Make sure password less sudo is enabled
+sudo -v || ( echo "Please setup password-less sudo first" >&2 && exit 1 )
+
+# Change the PWD to the directory where this script resides
+cd $(dirname $(readlink -e $0))
+
 if [[ -f ./setup.cfg ]]; then
   echo "Reading configuration from setup.cfg"
   source ./setup.cfg
@@ -13,6 +19,21 @@ SVC_STATE=${SVC_STATE:-Maryland}
 SVC_ORGANIZATION=${SVC_ORGANIZATION:-Organization}
 SVC_ORGANIZATIONAL_UNIT=${SVC_ORGANIZATIONAL_UNIT:-DevOps}
 SVC_DOMAIN=${SVC_DOMAIN:-domain.com}
+
+cat << __EOF__ | tee ./setup.sav
+##############################################################################
+# Settings: $(date)
+##############################################################################
+VAGRANT_VER=${VAGRANT_VER}
+SVC_PLATFORM=${SVC_PLATFORM}
+SVC_REPO=${SVC_REPO}
+SVC_COUNTRY_CODE=${SVC_COUNTRY_CODE}
+SVC_STATE=${SVC_STATE}
+SVC_ORGANIZATION=${SVC_ORGANIZATION}
+SVC_ORGANIZATIONAL_UNIT=${SVC_ORGANIZATIONAL_UNIT}
+SVC_DOMAIN=${SVC_DOMAIN}
+##############################################################################
+__EOF__
 
 echo "Installing required packages for libvirt and vagrant ${VAGRANT_VER}..."
 
