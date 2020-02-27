@@ -30,7 +30,7 @@ if [[ ! -f /etc/pki/tls/certs/svcplatform.crt ]]; then
 fi
 
 # Setup haproxy
-if [[ ! /etc/haproxy/haproxy.cfg ]]; then
+if [[ ! -f /etc/haproxy/haproxy.cfg ]]; then
   echo "Configuring HAProxy..."
   sudo cp -v conf/haproxy/haproxy.cfg /etc/haproxy/
 fi
