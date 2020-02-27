@@ -1,8 +1,17 @@
 #!/usr/bin/env bash
 
+if [[ -f ./setup.cfg ]]; then
+  echo "Reading configuration from setup.cfg"
+  source ./setup.cfg
+fi
+
 VAGRANT_VER=${VAGRANT_VER:-2.2.7}
 SVC_PLATFORM=${SVC_PLATFORM:-platform}
 SVC_REPO=${SVC_REPO:-https://github.com/scholarsmate/traefik2-docker-stack.git}
+SVC_COUNTRY_CODE=${SVC_COUNTRY_CODE:-US}
+SVC_STATE=${SVC_STATE:-Maryland}
+SVC_ORGANIZATION=${SVC_ORGANIZATION:-Organization}
+SVC_ORGANIZATIONAL_UNIT=${SVC_ORGANIZATIONAL_UNIT:-DevOps}
 SVC_DOMAIN=${SVC_DOMAIN:-domain.com}
 
 echo "Installing required packages for libvirt and vagrant ${VAGRANT_VER}..."
@@ -11,10 +20,20 @@ set -ex
 
 # This is idempotent
 sudo yum makecache
-sudo yum install -y libvirt libvirt-devel ruby-devel gcc qemu-kvm haproxy
+sudo yum install -y libvirt libvirt-devel ruby-devel gcc qemu-kvm haproxy openssl
+
+# Generate TLS certificate (as required)
+if [[ ! -f /etc/pki/tls/certs/svcplatform.crt ]]; then
+  echo "Generating TLS certificate..."
+  sudo mkdir -p /etc/pki/tls/{private,certs}
+  sudo openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout /etc/pki/tls/private/svcplatform.key -out /etc/pki/tls/certs/svcplatform.crt -subj "/C=${SVC_COUNTRY_CODE}/ST=${SVC_STATE}/O=${SVC_ORGANIZATION}/OU=${SVC_ORGANIZATIONAL_UNIT}/CN=${SVC_DOMAIN}"
+fi
 
 # Setup haproxy
-sudo cp conf/haproxy/haproxy.cfg /etc/haproxy/
+if [[ ! /etc/haproxy/haproxy.cfg ]]; then
+  echo "Configuring HAProxy..."
+  sudo cp -v conf/haproxy/haproxy.cfg /etc/haproxy/
+fi
 sudo setsebool -P haproxy_connect_any=1
 sudo systemctl start haproxy
 sudo systemctl enable haproxy

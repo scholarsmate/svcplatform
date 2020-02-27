@@ -1,0 +1,15 @@
+
+##############################################################################
+# setup.cfg
+##############################################################################
+
+VAGRANT_VER="2.2.7"
+SVC_PLATFORM="platform"
+SVC_REPO="https://github.com/scholarsmate/traefik2-docker-stack.git"
+SVC_COUNTRY_CODE="US"
+SVC_STATE="Maryland"
+SVC_ORGANIZATION="Organization"
+SVC_ORGANIZATIONAL_UNIT="DevOps"
+SVC_DOMAIN="domain.com"
+
+##############################################################################
