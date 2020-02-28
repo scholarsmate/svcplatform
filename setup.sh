@@ -59,13 +59,14 @@ if [[ ! -f /etc/pki/tls/certs/svcplatform.pem ]]; then
 fi
 
 # Setup haproxy
-if [[ ! -f /etc/haproxy/haproxy.cfg ]]; then
-  echo "Configuring HAProxy..."
-  sudo cp -v conf/haproxy/haproxy.cfg /etc/haproxy/
-fi
 sudo setsebool -P haproxy_connect_any=1
 sudo systemctl start haproxy
 sudo systemctl enable haproxy
+if [[ ! -f /etc/haproxy/haproxy.cfg ]]; then
+  echo "Configuring HAProxy..."
+  sudo cp -v conf/haproxy/haproxy.cfg /etc/haproxy/
+  sudo systemctl reload haproxy
+fi
 
 # Setup the firewall
 sudo systemctl start firewalld
