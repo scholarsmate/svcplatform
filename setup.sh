@@ -52,9 +52,9 @@ if [[ ! -f /etc/pki/tls/certs/svcplatform.pem ]]; then
   openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout ${KEY} -out ${CRT} -subj "/C=${SVC_COUNTRY_CODE}/ST=${SVC_STATE}/O=${SVC_ORGANIZATION}/OU=${SVC_ORGANIZATIONAL_UNIT}/CN=${SVC_DOMAIN}"
   echo "" >> ${KEY}
   cat ${CRT} >> ${KEY}
-  sudo mv ${KEY} /etc/pki/certs/svcplatform.pem
-  sudo chown root:haproxy /etc/pki/certs/svcplatform.pem
-  sudo chmod 440 /etc/pki/certs/svcplatform.pem
+  sudo mv ${KEY} /etc/pki/tls/certs/svcplatform.pem
+  sudo chown root:haproxy /etc/pki/tls/certs/svcplatform.pem
+  sudo chmod 440 /etc/pki/tls/certs/svcplatform.pem
   rm -f ${CRT}
 fi
 
