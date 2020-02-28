@@ -44,10 +44,18 @@ sudo yum makecache
 sudo yum install -y libvirt libvirt-devel ruby-devel gcc qemu-kvm haproxy openssl
 
 # Generate TLS certificate (as required)
-if [[ ! -f /etc/pki/tls/certs/svcplatform.crt ]]; then
+if [[ ! -f /etc/pki/tls/certs/svcplatform.pem ]]; then
   echo "Generating TLS certificate..."
-  sudo mkdir -p /etc/pki/tls/{private,certs}
-  sudo openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout /etc/pki/tls/private/svcplatform.key -out /etc/pki/tls/certs/svcplatform.crt -subj "/C=${SVC_COUNTRY_CODE}/ST=${SVC_STATE}/O=${SVC_ORGANIZATION}/OU=${SVC_ORGANIZATIONAL_UNIT}/CN=${SVC_DOMAIN}"
+  sudo mkdir -p /etc/pki/tls/certs
+  KEY=$(mktemp /tmp/openssl.XXXXXX)
+  CRT=$(mktemp /tmp/openssl.XXXXXX)
+  openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout ${KEY} -out ${CRT} -subj "/C=${SVC_COUNTRY_CODE}/ST=${SVC_STATE}/O=${SVC_ORGANIZATION}/OU=${SVC_ORGANIZATIONAL_UNIT}/CN=${SVC_DOMAIN}"
+  echo "" >> ${KEY}
+  cat ${CRT} >> ${KEY}
+  sudo mv ${KEY} /etc/pki/certs/svcplatform.pem
+  sudo chown root:haproxy /etc/pki/certs/svcplatform.pem
+  sudo chmod 440 /etc/pki/certs/svcplatform.pem
+  rm -f ${CRT}
 fi
 
 # Setup haproxy
