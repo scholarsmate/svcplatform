@@ -67,6 +67,11 @@ if [[ ! -f /etc/haproxy/haproxy.cfg ]]; then
   sudo cp -v conf/haproxy/haproxy.cfg /etc/haproxy/
   sudo systemctl reload haproxy
 fi
+if [[ ! -f /etc/rsyslog.d/haproxy.conf ]]; then
+  echo "Configuring rsyslog for HAProxy logs..."
+  sudo cp -v conf/rsyslog.d/haproxy.conf /etc/rsyslog.d/
+  sudo systemctl reload rsyslog
+fi
 
 # Setup the firewall
 sudo systemctl start firewalld
