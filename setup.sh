@@ -63,6 +63,7 @@ sudo systemctl enable haproxy
 sudo systemctl start firewalld
 sudo systemctl enable firewalld
 sudo firewall-cmd --permanent --zone=public --add-service=http
+sudo firewall-cmd --permanent --zone=public --add-service=https
 sudo firewall-cmd --reload
 
 # If vagrant is installed, don't do anything, but if not, install the desired version
