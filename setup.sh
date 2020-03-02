@@ -60,17 +60,17 @@ fi
 
 # Setup haproxy
 sudo setsebool -P haproxy_connect_any=1
-sudo systemctl start haproxy
 sudo systemctl enable haproxy
+if [[ ! -f /etc/rsyslog.d/haproxy.conf ]]; then
+  echo "Configuring rsyslog for HAProxy logs..."
+  sudo cp -v conf/rsyslog.d/haproxy.conf /etc/rsyslog.d/
+  sudo systemctl restart rsyslog
+fi
+sudo systemctl start haproxy
 if [[ ! -f /etc/haproxy/haproxy.cfg ]]; then
   echo "Configuring HAProxy..."
   sudo cp -v conf/haproxy/haproxy.cfg /etc/haproxy/
   sudo systemctl reload haproxy
-fi
-if [[ ! -f /etc/rsyslog.d/haproxy.conf ]]; then
-  echo "Configuring rsyslog for HAProxy logs..."
-  sudo cp -v conf/rsyslog.d/haproxy.conf /etc/rsyslog.d/
-  sudo systemctl reload rsyslog
 fi
 
 # Setup the firewall
