@@ -10,7 +10,7 @@ echo '##########################################################################
 set -ex
 
 mkdir -p /etc/restic
-[[ -f /etc/restic/restic.env ]] || cat <<__EOF__ | tee /etc/restic/restic.env
+[[ -f /etc/restic/restic.env ]] || cat << __EOF__ | tee /etc/restic/restic.env
 RESTIC_REPOSITORY=rest:http://10.4.16.6:8000
 RESTIC_PASSWORD=$(cat /vagrant/.restic/passwd)
 # Snapshot prune rules
@@ -34,6 +34,6 @@ if [[ ${RESTIC_SERVER} ]]; then
     mkdir -p /backup/restic/devops
 
     # Run the restic service via docker-compose
-    PATH=$PATH:/usr/local/bin docker-compose --file /vagrant/restic-service/docker-compose.yml up
+    PATH=$PATH:/usr/local/bin docker-compose --file /vagrant/restic-service/docker-compose.yml up -d
 
 fi
