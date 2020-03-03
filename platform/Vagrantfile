@@ -65,6 +65,7 @@ Vagrant.configure("2") do |config|
     nfs_storage_config.vm.hostname = "nfs-storage.local"
     nfs_storage_config.vm.network "private_network", ip: "10.4.16.6", :netmask => "255.255.255.0"
     nfs_storage_config.vm.synced_folder ".", "/vagrant", disabled: true
+    nfs_storage_config.vm.synced_folder "conf/restic", "/vagrant/.restic", type: "rsync"
 
     # Configure the proxy using the "vagrant-proxyconf" plugin.
     #nfs_storage_config.proxy.http     = "http://10.160.17.210:3128/"
@@ -74,6 +75,14 @@ Vagrant.configure("2") do |config|
     nfs_storage_config.vm.provision :shell, inline: $resize_volume_group
     nfs_storage_config.vm.provision :shell, path: "scripts/update_os.sh"
     nfs_storage_config.vm.provision :shell, path: "scripts/setup_nfs_server.sh"
+
+    # Provision docker.
+    nfs_storage_config.vm.provision :docker
+
+    # Provision docker-compose.
+    nfs_storage_config.vm.provision :shell, inline: $docker_compose_install_script
+
+    nfs_storage_config.vm.provision :shell, path: "scripts/setup_restic.sh", env: {"RESTIC_SERVER" => 1}
   end #config.vm.define "nfs_storage"
 
   # The most common configuration options are documented and commented below.
@@ -119,7 +128,6 @@ Vagrant.configure("2") do |config|
     # Setup the swarm.
     docker_server_1_config.vm.provision :shell, path: "scripts/start_swarm.sh", privileged: false
   end #config.vm.define "docker_server"
- 
 
   # The most common configuration options are documented and commented below.
   # For a complete reference, please see the online documentation at
@@ -165,7 +173,6 @@ Vagrant.configure("2") do |config|
     docker_server_2_config.vm.provision :shell, path: "scripts/join_swarm.sh", privileged: false
 
   end #config.vm.define "docker_server_2" do
-
 
   # The most common configuration options are documented and commented below.
   # For a complete reference, please see the online documentation at

@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  restic_server:
+    image: restic/rest-server
+    environment:
+      - DISABLE_AUTHENTICATION=1
+    ports:
+      - 8000:8000
+    volumes:
+      - /backups/restic/devops:/data
+    restart: always
+
