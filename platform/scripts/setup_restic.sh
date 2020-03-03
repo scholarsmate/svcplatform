@@ -12,7 +12,7 @@ set -ex
 mkdir -p /etc/restic
 [[ -f /etc/restic/restic.env ]] || cat <<__EOF__ | tee /etc/restic/restic.env
 RESTIC_REPOSITORY=rest:http://10.4.16.6:8000
-RESTIC_PASSWORD=$(cat ../conf/restic/passwd)
+RESTIC_PASSWORD=$(cat /vagrant/.restic/passwd)
 # Snapshot prune rules
 RESTIC_KEEP_DAILY=7
 RESTIC_KEEP_WEEKLY=4
