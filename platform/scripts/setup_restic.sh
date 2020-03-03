@@ -34,6 +34,6 @@ if [[ ${RESTIC_SERVER} ]]; then
     mkdir -p /backup/restic/devops
 
     # Run the restic service via docker-compose
-    PATH=$PATH:/usr/local/bin docker-compose --file ../restic-service/docker-compose.yml up
+    PATH=$PATH:/usr/local/bin docker-compose --file /vagrant/restic-service/docker-compose.yml up
 
 fi
