@@ -8,6 +8,5 @@ services:
     ports:
       - 8000:8000
     volumes:
-      - /backups/restic/devops:/data
+      - /backup/restic/devops:/data
     restart: always
-

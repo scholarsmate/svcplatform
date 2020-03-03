@@ -31,11 +31,9 @@ if [[ ${RESTIC_SERVER} ]]; then
     firewall-cmd --permanent --zone=public --add-port=8000/tcp
     firewall-cmd --reload
 
-    mkdir -p /backups/restic/devops
+    mkdir -p /backup/restic/devops
 
     # Run the restic service
     docker-compose --file ../restic-service/docker-compose.yml up
 
-    # Create the backup user
-    docker exec -it rest_server create_user devops $(cat ../conf/restic/passwd)
 fi

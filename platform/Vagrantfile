@@ -82,6 +82,7 @@ Vagrant.configure("2") do |config|
     # Provision docker-compose.
     nfs_storage_config.vm.provision :shell, inline: $docker_compose_install_script
 
+    # Restic server needs docker-compose, so be sure to put this after docker-compose provisioning.
     nfs_storage_config.vm.provision :shell, path: "scripts/setup_restic.sh", env: {"RESTIC_SERVER" => 1}
   end #config.vm.define "nfs_storage"
 
