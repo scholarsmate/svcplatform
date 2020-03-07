@@ -20,6 +20,8 @@ RESTIC_KEEP_MONTHLY=12
 RESTIC_KEEP_YEARLY=3
 # Run every day at 1am
 CRON_SCHEDULE="0 1 * * *"
+# For restic-compose-backup
+SWARM_MODE=true
 __EOF__
 
 if [[ ${RESTIC_SERVER} ]]; then
