@@ -49,13 +49,16 @@ if [[ ! -f /etc/pki/tls/certs/svcplatform.pem ]]; then
   sudo mkdir -p /etc/pki/tls/certs
   KEY=$(mktemp /tmp/openssl.XXXXXX)
   CRT=$(mktemp /tmp/openssl.XXXXXX)
-  openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout ${KEY} -out ${CRT} -subj "/C=${SVC_COUNTRY_CODE}/ST=${SVC_STATE}/O=${SVC_ORGANIZATION}/OU=${SVC_ORGANIZATIONAL_UNIT}/CN=${SVC_DOMAIN}"
+  KEY_SIZE=2048
+  openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:${KEY_SIZE} -keyout ${KEY} -out ${CRT} -subj "/C=${SVC_COUNTRY_CODE}/ST=${SVC_STATE}/O=${SVC_ORGANIZATION}/OU=${SVC_ORGANIZATIONAL_UNIT}/CN=${SVC_DOMAIN}"
   echo "" >> ${KEY}
   cat ${CRT} >> ${KEY}
   sudo mv ${KEY} /etc/pki/tls/certs/svcplatform.pem
   sudo chown root:haproxy /etc/pki/tls/certs/svcplatform.pem
   sudo chmod 440 /etc/pki/tls/certs/svcplatform.pem
   rm -f ${CRT}
+  # Generate Strong Diffie-Hellman group
+  sudo openssl dhparam -out /etc/pki/tls/certs/dhparams.pem ${KEY_SIZE}
 fi
 
 # Setup haproxy
