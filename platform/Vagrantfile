@@ -103,7 +103,7 @@ Vagrant.configure("2") do |config|
     # Every Vagrant development environment requires a box. You can search for
     # boxes at https://vagrantcloud.com/search.
     docker_server_1_config.vm.box = "generic/centos7"
-    docker_server_1_config.vm.hostname = "docker-server.local"
+    docker_server_1_config.vm.hostname = "docker-server-1.local"
     docker_server_1_config.vm.network "private_network", ip: "10.4.16.11", :netmask => "255.255.255.0"
     docker_server_1_config.vm.network "forwarded_port", guest: 80, host: 8881
     docker_server_1_config.vm.provision :hosts, :sync_hosts => true
@@ -147,7 +147,7 @@ Vagrant.configure("2") do |config|
     # Every Vagrant development environment requires a box. You can search for
     # boxes at https://vagrantcloud.com/search.
     docker_server_2_config.vm.box = "generic/centos7"
-    docker_server_2_config.vm.hostname = "docker-server-1.local"
+    docker_server_2_config.vm.hostname = "docker-server-2.local"
     docker_server_2_config.vm.network "private_network", ip: "10.4.16.12", :netmask => "255.255.255.0"
     docker_server_2_config.vm.network "forwarded_port", guest: 80, host: 8882
     docker_server_2_config.vm.provision :hosts, :sync_hosts => true
@@ -192,7 +192,7 @@ Vagrant.configure("2") do |config|
  # Every Vagrant development environment requires a box. You can search for
     # boxes at https://vagrantcloud.com/search.
     docker_server_3_config.vm.box = "generic/centos7"
-    docker_server_3_config.vm.hostname = "docker-server-2.local"
+    docker_server_3_config.vm.hostname = "docker-server-3.local"
     docker_server_3_config.vm.network "private_network", ip: "10.4.16.13", :netmask => "255.255.255.0"
     docker_server_3_config.vm.network "forwarded_port", guest: 80, host: 8883
     docker_server_3_config.vm.provision :hosts, :sync_hosts => true
