@@ -7,7 +7,7 @@ echo '##########################################################################
 set -ex
 
 # Only setup the rsync backups if both of these environment variables are populated
-if [[ -n "${RSYNC_BACKUP_SERVER}" && -n "${RSYNC_BACKUP_USER}"]]; then
+if [[ -n "${RSYNC_BACKUP_SERVER}" && -n "${RSYNC_BACKUP_USER}" ]]; then
     # install nfs server software
     yum install -y incron
 
