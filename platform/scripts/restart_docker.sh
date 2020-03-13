@@ -7,4 +7,5 @@ echo '##########################################################################
 set -ex
 
 # restart docker
+systemctl daemon-reload
 systemctl restart docker
