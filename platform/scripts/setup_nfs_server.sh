@@ -33,9 +33,9 @@ systemctl enable nfs-server
 # allow nfs traffic through the firewall
 systemctl start firewalld
 systemctl enable firewalld
-firewall-cmd --permanent --add-service=nfs
-firewall-cmd --permanent --add-service=mountd
-firewall-cmd --permanent --add-service=rpc-bind
+firewall-cmd --permanent --zone=public --add-service=nfs
+firewall-cmd --permanent --zone=public --add-service=mountd
+firewall-cmd --permanent --zone=public --add-service=rpc-bind
 systemctl restart firewalld
 
 # create a shared directory for the vagrant user
