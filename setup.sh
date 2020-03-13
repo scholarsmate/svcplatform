@@ -19,19 +19,23 @@ SVC_STATE=${SVC_STATE:-Maryland}
 SVC_ORGANIZATION=${SVC_ORGANIZATION:-Organization}
 SVC_ORGANIZATIONAL_UNIT=${SVC_ORGANIZATIONAL_UNIT:-DevOps}
 SVC_DOMAIN=${SVC_DOMAIN:-domain.com}
+RSYNC_BACKUP_SERVER=${RSYNC_BACKUP_SERVER:-192.168.1.45}
+RSYNC_BACKUP_USER=${RSYNC_BACKUP_USER:-devops}
 
 cat << __EOF__ | tee ./setup.sav
 ##############################################################################
 # Settings: $(date)
 ##############################################################################
-VAGRANT_VER=${VAGRANT_VER}
-SVC_PLATFORM=${SVC_PLATFORM}
-SVC_REPO=${SVC_REPO}
-SVC_COUNTRY_CODE=${SVC_COUNTRY_CODE}
-SVC_STATE=${SVC_STATE}
-SVC_ORGANIZATION=${SVC_ORGANIZATION}
-SVC_ORGANIZATIONAL_UNIT=${SVC_ORGANIZATIONAL_UNIT}
-SVC_DOMAIN=${SVC_DOMAIN}
+VAGRANT_VER="${VAGRANT_VER}"
+SVC_PLATFORM="${SVC_PLATFORM}"
+SVC_REPO="${SVC_REPO}"
+SVC_COUNTRY_CODE="${SVC_COUNTRY_CODE}"
+SVC_STATE="${SVC_STATE}"
+SVC_ORGANIZATION="${SVC_ORGANIZATION}"
+SVC_ORGANIZATIONAL_UNIT="${SVC_ORGANIZATIONAL_UNIT}"
+SVC_DOMAIN="${SVC_DOMAIN}"
+RSYNC_BACKUP_SERVER="${RSYNC_BACKUP_SERVER}"
+RSYNC_BACKUP_USER="${RSYNC_BACKUP_USER}"
 ##############################################################################
 __EOF__
 
@@ -90,9 +94,9 @@ fi
 
 echo "Setting up the platform in ${SVC_PLATFORM}..."
 
-cd "$SVC_PLATFORM"
+cd "${SVC_PLATFORM}"
 mkdir -p "repo"
-[[ -d "repo/svcrepo" ]] || git clone "$SVC_REPO" "repo/svcrepo"
+[[ -d "repo/svcrepo" ]] || git clone "${SVC_REPO}" "repo/svcrepo"
 vagrant up --provider=libvirt --no-parallel
 vagrant status
 

@@ -46,6 +46,8 @@ cwd = Dir.pwd.split("/").last
 username = ENV['USER']
 svc_domain = ENV['SVC_DOMAIN']
 domain_prefix = "#{username}-#{cwd}"
+rsync_backup_server = ENV['RSYNC_BACKUP_SERVER']
+rsync_backup_user = ENV['RSYNC_BACKUP_USER']
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
@@ -76,7 +78,7 @@ Vagrant.configure("2") do |config|
     nfs_storage_config.vm.provision :shell, inline: $resize_volume_group
     nfs_storage_config.vm.provision :shell, path: "scripts/update_os.sh"
     nfs_storage_config.vm.provision :shell, path: "scripts/setup_nfs_server.sh"
-    nfs_storage_config.vm.provision :shell, path: "scripts/setup_rsync.sh"
+    nfs_storage_config.vm.provision :shell, path: "scripts/setup_rsync.sh", env: {"RSYNC_BACKUP_SERVER" => "#{rsync_backup_server}", "RSYNC_BACKUP_USER" => "#{rsync_backup_user}"}
 
     # Provision docker.
     nfs_storage_config.vm.provision :docker
