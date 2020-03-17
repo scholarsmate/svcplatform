@@ -65,6 +65,10 @@ if [[ ! -f /etc/pki/tls/certs/svcplatform.pem ]]; then
   sudo openssl dhparam -out /etc/pki/tls/certs/dhparams.pem ${KEY_SIZE}
 fi
 
+# Setup the firewall
+sudo systemctl start firewalld
+sudo systemctl enable firewalld
+
 # Setup haproxy
 sudo setsebool -P haproxy_connect_any=1
 sudo systemctl enable haproxy
@@ -78,11 +82,12 @@ if [[ ! -f /etc/haproxy/haproxy.cfg ]]; then
   echo "Configuring HAProxy..."
   sudo cp -v conf/haproxy/haproxy.cfg /etc/haproxy/
   sudo systemctl reload haproxy
+  # Allow port 8404 (HAProxy stats) through the firewall
+  # URL is http://<server_ip>:8404/stats
+  sudo firewall-cmd --permanent --zone=public --add-port=8404/tcp
 fi
 
-# Setup the firewall
-sudo systemctl start firewalld
-sudo systemctl enable firewalld
+# Allow HTTP and HTTPS through the firewall
 sudo firewall-cmd --permanent --zone=public --add-service=http
 sudo firewall-cmd --permanent --zone=public --add-service=https
 sudo firewall-cmd --reload
