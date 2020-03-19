@@ -30,6 +30,7 @@ cat << __EOF__ | tee ./setup.sav
 VAGRANT_VER="${VAGRANT_VER}"
 SVC_PLATFORM="${SVC_PLATFORM}"
 SVC_REPO="${SVC_REPO}"
+SVC_CERT_KEY_SIZE="${SVC_CERT_KEY_SIZE}"
 SVC_COUNTRY_CODE="${SVC_COUNTRY_CODE}"
 SVC_STATE="${SVC_STATE}"
 SVC_ORGANIZATION="${SVC_ORGANIZATION}"
@@ -52,31 +53,9 @@ sudo yum install -y libvirt libvirt-devel ruby-devel gcc qemu-kvm haproxy openss
 if [[ ! -f /etc/pki/tls/certs/svcplatform.pem ]]; then
   echo "Generating TLS certificate..."
   sudo mkdir -p /etc/pki/tls/certs
-
-  cat <<EOF | sudo tee /etc/pki/tls/certs/svcplatform.cnf
-[ req ]
-default_bits        = ${SVC_CERT_KEY_SIZE}
-distinguished_name  = req_distinguished_name
-req_extensions      = req_extensions_section
-
-[ req_distinguished_name ]
-countryName         = ${SVC_COUNTRY_CODE}
-stateOrProvinceName = ${SVC_STATE}
-organizationName    = ${SVC_ORGANIZATION}
-commonName          = ${SVC_DOMAIN}
-
-[ req_extensions_section ]
-subjectAltName      = @subject_alternative_name_section
-
-[ subject_alternative_name_section ]
-DNS.1               = ${SVC_DOMAIN}
-DNS.2               = *.${SVC_DOMAIN}
-
-EOF
-
   key_temp=$(mktemp /tmp/openssl.XXXXXX)
   crt_temp=$(mktemp /tmp/openssl.XXXXXX)
-  openssl req -x509 -sha256 -nodes -days 3650 -newkey rsa:${SVC_CERT_KEY_SIZE} -keyout ${key_temp} -out ${crt_temp} -config /etc/pki/tls/certs/svcplatform.cnf
+  openssl req -x509 -sha256 -nodes -days 3650 -newkey rsa:${SVC_CERT_KEY_SIZE} -keyout ${key_temp} -out ${crt_temp} -subj "/C=${SVC_COUNTRY_CODE}/ST=${SVC_STATE}/O=${SVC_ORGANIZATION}/OU=${SVC_ORGANIZATIONAL_UNIT}/CN=${SVC_DOMAIN}" -addext "subjectAltName = DNS:*.${SVC_DOMAIN}"
   echo "" >> ${key_temp}
   cat ${crt_temp} >> ${key_temp}
   sudo mv ${key_temp} /etc/pki/tls/certs/svcplatform.pem
