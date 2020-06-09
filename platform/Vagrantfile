@@ -129,6 +129,7 @@ Vagrant.configure("2") do |config|
     docker_server_1_config.vm.provision :shell, path: "scripts/update_os.sh"
     docker_server_1_config.vm.provision :shell, path: "scripts/setup_nfs_client.sh"
     docker_server_1_config.vm.provision :shell, path: "scripts/setup_restic.sh"
+    docker_server_1_config.vm.provision :shell, path: "scripts/setup_limits.sh"
 
     # Provision docker.
     docker_server_1_config.vm.provision :docker
@@ -175,6 +176,7 @@ Vagrant.configure("2") do |config|
     docker_server_2_config.vm.provision :shell, path: "scripts/update_os.sh"
     docker_server_2_config.vm.provision :shell, path: "scripts/setup_nfs_client.sh"
     docker_server_2_config.vm.provision :shell, path: "scripts/setup_restic.sh"
+    docker_server_2_config.vm.provision :shell, path: "scripts/setup_limits.sh"
 
     # Provision docker.
     docker_server_2_config.vm.provision :docker
@@ -221,6 +223,7 @@ Vagrant.configure("2") do |config|
     docker_server_3_config.vm.provision :shell, path: "scripts/update_os.sh"
     docker_server_3_config.vm.provision :shell, path: "scripts/setup_nfs_client.sh"
     docker_server_3_config.vm.provision :shell, path: "scripts/setup_restic.sh"
+    docker_server_3_config.vm.provision :shell, path: "scripts/setup_limits.sh"
 
     # Provision docker.
     docker_server_3_config.vm.provision :docker
